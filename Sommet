@@ -1,0 +1,66 @@
+package exo;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
+
+public class Sommet {
+	String nom;
+	HashMap<Sommet, Double> voisins = new HashMap<Sommet, Double>();
+	
+
+	public Sommet(String nom) {
+		this.nom=nom;
+	}
+	
+	public void ajouterVoisin(Sommet voisin, Double distance) {
+		this.voisins.put(voisin, distance);
+		voisin.voisins.put(this, distance);
+	}
+	
+	public Double distance (Sommet s) {
+		if (this.voisins.containsKey(s)) {
+			return voisins.get(s);
+			}
+		
+		return -1.0;
+	}
+	
+	public Iterator<Sommet> voisins() {
+		Set<Sommet> keySet = this.voisins.keySet();
+		Iterator<Sommet> it = keySet.iterator();
+		return it;
+					
+		}
+	
+	public String getNom() {
+		return this.nom;
+	}
+	
+	public String toString() {
+		String s=("Le sommet de nom: "+ this.nom +" possède " +this.voisins.size()+ " voisins : ") ;
+		Iterator<Sommet> it= this.voisins();
+		while (it.hasNext()) {
+			Sommet som= it.next();
+			s+= (String)som.nom + " à "+this.voisins.get(som)+ " km et ";	
+		}
+		s = s.substring(0,s.length()-3);
+		return s;
+	}
+	
+	 public static void main(String[] args)  {
+		 Sommet s1 = new Sommet("s1");
+		 Sommet s2 = new Sommet ("s2");
+		 Sommet s3 = new Sommet ("s3");
+		 s1.ajouterVoisin(s2, 3.4);
+		 s1.ajouterVoisin(s3, 6.4);
+		
+
+		 System.out.println(s1);
+		 System.out.println(s1.distance(s3));
+		
+		 
+
+	 }
+
+}

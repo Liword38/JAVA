@@ -1,0 +1,122 @@
+package exo;
+
+import java.util.*;
+
+public class Chemin implements Iterable<Sommet>{
+	Double longueur;
+	ArrayList<Sommet> chemin = new ArrayList<Sommet>();
+
+	public Chemin(Sommet debut) {
+		this.longueur=0.0;
+		this.chemin.add(debut);
+	}	
+	
+	protected Chemin(Chemin debut, Sommet suite) throws Exception {
+		ArrayList<Sommet> sommets = debut.chemin;
+		Sommet lastSom=sommets.get(sommets.size()-1);
+		if (!sommets.get(sommets.size()-1).voisins.containsKey(suite)) {
+			throw new Exception("les Sommet "+lastSom+ " et " + suite + " ne sont pas voisins");
+		}	
+		else {			
+			ArrayList<Sommet> al =debut.chemin;
+			al.add(suite);
+			this.chemin=al;
+			this.longueur = debut.longueur +lastSom.voisins.get(suite);
+		}	
+	}
+	
+	@Override
+	public Iterator<Sommet> iterator() {
+		Iterator<Sommet> it = this.chemin.iterator();
+		return it;
+		
+	}
+	
+	public String toString() {
+		String s = "Ce chemin fait "+ this.longueur + " km et comporte " + this.chemin.size() + " étapes: ";
+		for (Sommet som : this.chemin) {
+			s += "\""+som.nom+ "\""+" , ";
+			
+		}
+		s=s.substring(0,s.length()-2);
+		return s;
+	}
+	
+	public Sommet arrivee() {
+		
+		return(this.chemin.get(this.chemin.size()-1));
+	}
+	
+	
+	
+	
+	
+	public HashSet<Chemin> etendre() {
+		Chemin d = this;
+		HashSet<Chemin> monSac=new HashSet<Chemin>();
+		HashSet<Chemin> autreSac = new HashSet<Chemin>();
+		Sommet der = this.arrivee();
+		Iterator<Sommet> it = der.voisins();
+		while (it.hasNext()) {
+			try {
+				Chemin c = new Chemin(this,it.next());
+				monSac.add(c);
+			
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		return monSac;
+	}
+	
+	
+	
+	
+	
+	public void afficheSac(HashSet<Chemin> sac) {
+		System.out.println("Le sac comporte " + sac.size() + " chemins: ");
+		Iterator<Chemin> it = sac.iterator();
+		while (it.hasNext()) {
+			System.out.println(it.next());
+			System.getProperty("line.separator");
+		
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		 Sommet s1 = new Sommet("s1");
+		 Sommet s2 = new Sommet ("s2");
+		 Sommet s3 = new Sommet ("s3");
+		 Sommet s4 = new Sommet ("s4");
+		 Sommet s5 = new Sommet ("s5");
+		 Sommet s6 = new Sommet ("s6");
+		 Sommet s7 = new Sommet ("s7");
+
+
+		 s1.ajouterVoisin(s2, 3.4);
+		 s1.ajouterVoisin(s3, 6.4);
+		 s1.ajouterVoisin(s4, 4.8);
+		 s1.ajouterVoisin(s7, 4.8);
+		 s7.ajouterVoisin(s6, 4.8);
+
+		
+		 //System.out.println(s1);
+		 
+		 Chemin c1 =new Chemin (s6);
+		 Chemin c2 = new Chemin(c1,s7);
+		 Chemin c3 = new Chemin(c2,s1);
+		 //System.out.println(c3.arrivee());
+		 c3.afficheSac(c3.etendre());
+
+
+		
+		 
+		
+
+	}
+
+
+
+}
